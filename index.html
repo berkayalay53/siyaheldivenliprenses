@@ -31,5 +31,24 @@
     </main>
 
     <script src="script.js"></script>
+  <script>
+    const music = document.getElementById('music');
+const playBtn = document.getElementById('playBtn');
+
+function togglePlay() {
+    if (music.paused) {
+        music.play();
+        playBtn.innerText = "DURAKLAT";
+        playBtn.style.opacity = "0.5";
+    } else {
+        music.pause();
+        playBtn.innerText = "DEVAM ET";
+        playBtn.style.opacity = "1";
+    }
+}
+
+// Zamanla sözlerin kayması için basit bir mekanizma eklenebilir
+// Şarkıdaki saniyelere göre .lyrics-content transform: translateY() yapılabilir.
+      <script>
 </body>
 </html>
