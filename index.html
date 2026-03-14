@@ -3,108 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Norm Ender - Kaktüs | Player</title>
+    <title>Kaktüs // Norm Ender</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="background-cover"></div>
-    <div class="background-overlay"></div>
+    <div class="overlay"></div>
+    <div class="background-image"></div>
 
-    <div class="player-container">
-        <div class="album-art-container">
-            <img src="kapak.jpg" alt="Norm Ender Kaktüs Albüm Kapağı" class="album-art">
-        </div>
+    <main class="player-container">
+        <header class="song-info">
+            <h1>Kaktüs</h1>
+            <p>Norm Ender</p>
+        </header>
 
-        <div class="track-info">
-            <h2 class="track-name">Kaktüs</h2>
-            <h3 class="artist-name">Norm Ender</h3>
-        </div>
+        <section class="lyrics-window">
+            <div class="lyrics-content">
+                <p>Bir yanım kaktüs, bir yanım bahar...</p>
+                <p>Yine de dikeni batar, ruhumu sarar.</p>
+                </div>
+        </section>
 
-        <div class="audio-controls-container">
-            <audio id="audio-player" src="kaktus.mp3"></audio>
-            
-            <div class="controls">
-                <button class="control-btn" id="prev-btn" title="Önceki (Varsa)">
-                    <i class="fas fa-step-backward"></i>
-                </button>
-                <button class="control-btn play-pause-btn" id="play-btn" title="Oynat/Duraklat">
-                    <i class="fas fa-play" id="play-icon"></i>
-                </button>
-                <button class="control-btn" id="next-btn" title="Sonraki (Varsa)">
-                    <i class="fas fa-step-forward"></i>
-                </button>
-            </div>
-
-            <div class="progress-container">
-                <span id="current-time">0:00</span>
-                <input type="range" id="progress-bar" value="0" max="100">
-                <span id="duration">0:00</span>
-            </div>
-        </div>
-    </div>
+        <footer class="controls">
+            <audio id="music" src="kaktus.mp3"></audio>
+            <button onclick="togglePlay()" id="playBtn">BAŞLAT</button>
+        </footer>
+    </main>
 
     <script src="script.js"></script>
-<script>
-const audio = document.getElementById('audio-player');
-const playBtn = document.getElementById('play-btn');
-const playIcon = document.getElementById('play-icon');
-const progressBar = document.getElementById('progress-bar');
-const currentTimeEl = document.getElementById('current-time');
-const durationEl = document.getElementById('duration');
-
-// Oynat/Duraklat Fonksiyonu
-function togglePlay() {
-    if (audio.paused) {
-        audio.play();
-        playIcon.classList.remove('fa-play');
-        playIcon.classList.add('fa-pause');
-    } else {
-        audio.pause();
-        playIcon.classList.remove('fa-pause');
-        playIcon.classList.add('fa-play');
-    }
-}
-
-// Zamanı formatla (0:00 formatında)
-function formatTime(time) {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-}
-
-// İlerleme çubuğunu ve zamanı güncelle
-function updateProgress() {
-    if (audio.duration) {
-        const progressPercent = (audio.currentTime / audio.duration) * 100;
-        progressBar.value = progressPercent;
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-        durationEl.textContent = formatTime(audio.duration);
-    }
-}
-
-// İlerleme çubuğuna tıklandığında şarkıyı o ana sar
-function setProgress(e) {
-    const width = this.clientWidth;
-    const clickX = e.offsetX;
-    const duration = audio.duration;
-    audio.currentTime = (clickX / width) * duration;
-}
-
-// Event Listeners
-playBtn.addEventListener('click', togglePlay);
-audio.addEventListener('timeupdate', updateProgress);
-audio.addEventListener('loadedmetadata', updateProgress); // Şarkı yüklenince süreyi göster
-progressBar.addEventListener('click', setProgress);
-
-// Şarkı bittiğinde ikonu sıfırla
-audio.addEventListener('ended', () => {
-    playIcon.classList.remove('fa-pause');
-    playIcon.classList.add('fa-play');
-    progressBar.value = 0;
-    currentTimeEl.textContent = '0:00';
-});
-    <script>
 </body>
 </html>
