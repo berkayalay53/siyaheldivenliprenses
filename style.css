@@ -1,150 +1,80 @@
-/* Genel Ayarlar */
+/* Minimalist ve Derin Bir Ton */
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* Taşmayı önle */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+    overflow: hidden;
 }
 
-/* Arka Plan Kapak Resmi (Tam Ekran, Bulanık) */
-.background-cover {
+.background-image {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('kapak.jpg'); /* Albüm kapağın */
-    background-size: cover;
-    background-position: center;
-    filter: blur(15px); /* Hafif bulanıklık */
-    transform: scale(1.1); /* Kenarlardaki beyazlığı önlemek için */
+    background: url('kapak.jpg') no-repeat center center/cover;
+    filter: grayscale(40%) blur(2px);
     z-index: -2;
 }
 
-/* Koyu Katman (Arka planın üzerine) */
-.background-overlay {
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.65); /* Koyu şeffaf katman */
+    background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.9) 100%);
     z-index: -1;
 }
 
-/* Müzik Çalar Konteyneri (Şeffaf panel) */
 .player-container {
-    background: rgba(255, 255, 255, 0.08); /* Çok hafif beyaz şeffaf */
-    backdrop-filter: blur(10px); /* Panel içi hafif bulanık */
-    padding: 2.5rem;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease;
 }
 
-.player-container:hover {
-    transform: translateY(-5px); /* Hafif yükselme efekti */
+.song-info h1 {
+    font-size: 3rem;
+    letter-spacing: 10px;
+    margin-bottom: 0;
+    text-transform: uppercase;
 }
 
-/* Albüm Kapağı (Player içinde) */
-.album-art-container {
-    width: 220px;
-    height: 220px;
-    margin: 0 auto 1.5rem;
-    border-radius: 20px;
+.song-info p {
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.lyrics-window {
+    height: 150px;
+    margin: 40px 0;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    border: 4px solid rgba(255, 255, 255, 0.1);
+    mask-image: linear-gradient(transparent, white, transparent);
 }
 
-.album-art {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Resmi sığdır */
+.lyrics-content p {
+    font-size: 1.2rem;
+    line-height: 2;
+    transition: transform 0.5s ease;
 }
 
-/* Şarkı Bilgileri */
-.track-name {
-    margin: 10px 0 5px;
-    font-size: 2rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 700;
-}
-
-.artist-name {
-    margin: 0 0 25px;
-    font-weight: 300;
-    color: #a5d6a7; /* Kaktüs yeşili */
-    text-transform: uppercase;
-    font-size: 0.95rem;
-    letter-spacing: 2px;
-}
-
-/* Kontroller */
-.audio-controls-container {
-    margin-top: 20px;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.control-btn {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.5rem;
+button {
+    background: transparent;
+    border: 1px solid #e0e0e0;
+    color: #e0e0e0;
+    padding: 10px 30px;
     cursor: pointer;
-    transition: color 0.2s ease, transform 0.2s ease;
+    letter-spacing: 5px;
+    transition: all 0.3s ease;
 }
 
-.control-btn:hover {
-    color: white;
-    transform: scale(1.1);
-}
-
-.play-pause-btn {
-    font-size: 2.5rem;
-    color: #2e7d32; /* Oynat butonu yeşil */
-    background-color: white;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(46, 125, 50, 0.4);
-}
-
-.play-pause-btn:hover {
-    background-color: #f0f0f0;
-    color: #1b5e20;
-}
-
-/* İlerleme Çubuğu */
-.progress-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-#progress-bar {
-    flex-grow: 1;
-    cursor: pointer;
-    accent-color: #2e7d32; /* İlerleme çubuğu rengi yeşil */
+button:hover {
+    background: #e0e0e0;
+    color: #0a0a0a;
 }
