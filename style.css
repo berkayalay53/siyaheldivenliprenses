@@ -1,0 +1,1177 @@
+/* === MOBİLDEKİ MAVİ TIKLAMA IŞIĞINI KALDIR === */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+/* BAŞLANGIÇTA GİZLE, YÜKLENİNCE GÖSTER */
+body {
+  opacity: 0; /* Başta görünmez */
+  transition: opacity 0.8s ease-in-out; /* 0.8 saniyede yavaşça belirir */
+  background-color: #0f1113; /* Yüklenirken arkada siyah fon dursun */
+}
+
+body.loaded {
+  opacity: 1 !important; /* Yüklendiğinde görünür olsun */
+}
+::selection {
+  background: #d4a373; /* Arka plan pas rengi */
+  color: #000; /* Yazı siyah */
+  text-shadow: none;
+}
+
+:root {
+  --bg: #0f1113;
+  --bg2: #14181b;
+  --card: #161a1e;
+  --text: #e9e6df;
+  --muted: #bcb6aa;
+  --line: rgba(255, 255, 255, .10);
+
+  --accent: #d4a373;
+  --accent2: #86a8a2;
+
+  --serif: "Crimson Pro", ui-serif, Georgia, "Times New Roman", serif;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --radius: 22px;
+  --shadow: 0 16px 50px rgba(0, 0, 0, .45);
+}
+
+
+html, body {
+  width: 100%;
+  max-width: 100vw; /* Ekran genişliğini asla geçme */
+  overflow-x: hidden !important; /* Sağa taşmayı YASAKLA */
+  margin: 0;
+  padding: 0;
+  position: relative;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Arka plan renkleri */
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(212, 163, 115, .10), transparent 55%),
+    radial-gradient(900px 700px at 80% 30%, rgba(134, 168, 162, .08), transparent 60%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  color: var(--text);
+}
+
+body {
+  font-family: var(--sans);
+  letter-spacing: .2px;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+
+body.loaded {
+  opacity: 1;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Grain Efekti */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+.wrap {
+  width: min(1000px, calc(100% - 36px));
+  margin-inline: auto;
+}
+
+.hero {
+  padding: 42px 0 18px;
+}
+
+.hero__inner {
+  width: min(1100px, calc(100% - 36px));
+  margin: auto;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 26px;
+  align-items: center;
+}
+
+.title h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(34px, 4vw, 52px);
+}
+
+.sub {
+  margin: 14px 0 18px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.main {
+  padding-bottom: 60px;
+}
+
+.section {
+  padding: 26px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* KART TASARIMLARI */
+.quote {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .02);
+  padding: 18px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.quote:hover {
+  transform: translateY(-5px);
+  /* 5 piksel yukarı kalkar */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.quote p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.sig__meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Profil */
+.authorProfile {
+  text-align: center;
+}
+
+.authorPhoto {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 14px;
+  filter: grayscale(100%) contrast(.95);
+  opacity: .9;
+}
+
+.igLink {
+  display: inline-flex;
+  margin: 6px 0 10px;
+  color: rgba(233, 230, 223, .65);
+}
+
+.igLink:hover {
+  color: rgba(233, 230, 223, .95);
+}
+
+/* ========================= */
+/* === AÇILIŞ PERDESİ === */
+/* ========================= */
+
+#introScreen {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(600px 400px at 30% 30%, rgba(212, 163, 115, .14), transparent 60%),
+    radial-gradient(600px 400px at 70% 70%, rgba(134, 168, 162, .12), transparent 60%),
+    #0b0d0f;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.introInner {
+  text-align: center;
+  max-width: 540px;
+  padding: 24px;
+  animation: introAppear 1.2s ease forwards;
+}
+
+/* Yazıya çok hafif canlılık */
+.introText {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  animation: softBreath 6s ease-in-out infinite;
+}
+
+.introText span {
+  color: var(--accent);
+}
+
+/* Nefes alan animasyon */
+@keyframes softBreath {
+  0%, 100% { opacity: .92; }
+  50% { opacity: 1; }
+}
+
+@keyframes introAppear {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === ELİT BUTON === */
+#introBtn {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, .02);
+  border: 1px solid rgba(255, 255, 255, .18);
+  color: rgba(233, 230, 223, .55);
+  padding: 11px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    color .35s ease,
+    border-color .35s ease,
+    background .35s ease,
+    transform .35s ease;
+}
+
+#introBtn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: rgba(212, 163, 115, .08);
+  transform: translateY(-1px);
+}
+
+#introScreen.hide {
+  animation: introDisappear .9s ease forwards;
+}
+
+@keyframes introDisappear {
+  to {
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+/* Medya Sorguları */
+@media (max-width: 900px) {
+  .hero__inner { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .introText { font-size: 22px; }
+  
+  /* Mobilde plak küçülsün */
+  .music-control {
+    width: 45px; height: 45px;
+    bottom: 15px; right: 15px;
+  }
+  .quote {
+    margin-bottom: 20px;
+  }
+}
+
+/* === KAYDIRMA ÇUBUĞU (SCROLLBAR) === */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 163, 115, .8);
+}
+
+/* === FENER EFEKTİ (SPOTLIGHT) === */
+.spotlight {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9990;
+  background: radial-gradient(
+    circle 250px at var(--x, 50%) var(--y, 50%),
+    rgba(212, 163, 115, 0.08),
+    transparent 60%
+  );
+  mix-blend-mode: screen;
+  transition: background 0.1s ease;
+}
+
+/* === İMZA === */
+/* === ISLAK İMZA EFEKTİ === */
+.signature {
+  font-family: 'Mrs Saint Delafield', cursive;
+  font-size: 3.5rem;      /* Biraz büyüttük, okunsun */
+  color: #d4a373;         /* Pas rengi */
+  
+  /* Konumlandırma (Sağ Alt) */
+  display: block;
+  width: fit-content;     /* İçerik kadar genişlik */
+  margin-left: auto;      /* En sağa yaslar */
+  margin-top: 15px;       /* Biyografiden uzaklık */
+  transform: rotate(-5deg); /* Hafif el yazısı eğikliği */
+  
+  /* Islak Yazılma Animasyonu Ayarları */
+  clip-path: inset(0 100% 0 0); /* Başlangıçta görünmez (Soldan kapalı) */
+  animation: writeSignature 3s cubic-bezier(0.5, 0, 0.5, 1) forwards 1s; 
+  /* 1 saniye bekle, 3 saniyede yaz */
+}
+
+@keyframes writeSignature {
+  to {
+    clip-path: inset(0 0 0 0); /* Tamamen görünür yap */
+  }
+}
+
+/* === PLAK ÇALAR === */
+.music-control {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background-image: url('./kralkaybederse.jpg');
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #d4a373;
+  cursor: pointer;
+  z-index: 9995;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, filter 0.3s;
+}
+
+.music-control::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 12px; height: 12px;
+  background: #0f1113;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #d4a373;
+}
+
+.music-control:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+.music-control.playing {
+  animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* === ISLAK İMZA EFEKTİ === */
+.signature {
+  font-family: 'Mrs Saint Delafield', cursive;
+  font-size: 3rem;       /* Kutu içinde çok büyük durmasın diye 3rem ideal */
+  color: #d4a373;
+  display: block;
+  width: fit-content;
+  margin-left: auto;     /* Sağa yaslar */
+  margin-top: 20px;      /* Yazıdan uzaklaştırır */
+  margin-right: 10px;    /* Kutunun kenarından biraz boşluk */
+  transform: rotate(-5deg);
+  
+  /* Animasyon */
+  clip-path: inset(0 100% 0 0);
+  animation: writeSignature 3s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.5s; 
+}
+
+@keyframes writeSignature {
+  to { clip-path: inset(0 0 0 0); }
+}
+/* === HAYALET İMLEÇ === */
+.cursor-dot,
+.cursor-outline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.cursor-dot {
+  width: 5px;
+  height: 5px;
+  background-color: var(--accent);
+}
+
+.cursor-outline {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(212, 163, 115, 0.5);
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+/* Mobilde imleç gizlensin (Dokunmatik ekran) */
+@media (max-width: 900px) {
+  .cursor-dot, .cursor-outline { display: none; }
+}
+/* === KAYDIRMA OKU === */
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.7;
+}
+
+.scroll-indicator span {
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-bottom: 1px solid var(--accent);
+  border-right: 1px solid var(--accent);
+  transform: rotate(45deg);
+  margin: -5px;
+  animation: scrollAnimate 2s infinite;
+}
+
+.scroll-indicator span:nth-child(2) { animation-delay: -0.2s; }
+.scroll-indicator span:nth-child(3) { animation-delay: -0.4s; }
+
+@keyframes scrollAnimate {
+  0% { opacity: 0; transform: rotate(45deg) translate(-10px, -10px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(45deg) translate(0px, 0px); }
+}
+/* ========================================= */
+/* === KADERİN CÜMLESİ (RASTGELE ALINTI) === */
+/* ========================================= */
+
+.fate-section {
+  padding: 6rem 0;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+
+.fate-box {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.fate-header {
+  font-family: var(--serif);
+  font-size: 2rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+.fate-sub {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* Özel Buton Tasarımı */
+.btn-fate {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 12px 35px;
+  border-radius: 50px;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-fate:hover {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 20px rgba(212, 163, 115, 0.3);
+}
+
+/* Alıntı Sonuç Alanı */
+.fate-result {
+  margin-top: 3rem;
+  opacity: 0; /* Başlangıçta görünmez */
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.fate-result.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#quote-text {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  color: #fff;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+#book-name {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+/* ========================================= */
+/* === YAZAR FOTOĞRAFI: MÜHÜR EFEKTİ === */
+/* ========================================= */
+
+/* Fotoğrafın kendisi */
+.authorPhoto {
+  width: 160px;             /* Boyutu biraz büyüttük (120'den 160'a) */
+  height: 160px;            /* Tam kare olsun */
+  border-radius: 50%;       /* Yuvarlak */
+  object-fit: cover;        /* Resmi içine sığdır */
+  margin-bottom: 1.5rem;    /* Altındaki yazıyla mesafe */
+  
+  /* --- Mühürün Temeli --- */
+  border: 2px solid var(--accent); /* İnce, pas rengi çerçeve */
+  padding: 4px;                    /* Çerçeve ile resim arası boşluk */
+  background: transparent;         /* Aradaki boşluk şeffaf olsun */
+  
+  /* --- Başlangıç Hali (Siyah-Beyaz) --- */
+  filter: grayscale(100%) brightness(0.9); /* Tamamen siyah-beyaz ve hafif koyu */
+  
+  /* --- Geçiş Efekti --- */
+  transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); /* Çok yumuşak geçiş */
+}
+
+/* Üzerine gelince (Hover) ne olacak? */
+.authorPhoto:hover {
+  filter: grayscale(0%) brightness(1.05); /* Renkli ve biraz parlak olsun */
+  border-color: #e9d8a6;                  /* Çerçeve rengi biraz açılıp parlasın */
+  box-shadow: 0 0 25px rgba(212, 163, 115, 0.4); /* Arkasına hafif bir ışık (glow) ekle */
+  transform: scale(1.05);                 /* Çok hafif büyüsün (nefes alır gibi) */
+}
+
+/* Mobilde fotoğraf biraz daha küçük olsun */
+@media (max-width: 768px) {
+  .authorPhoto {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 1rem;
+  }
+}
+/* === PAYLAŞIM BUTONLARI === */
+.share-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  opacity: 0; /* Başlangıçta gizli */
+  transform: translateY(10px);
+  transition: all 0.5s ease 0.2s; /* Alıntıdan biraz sonra gelsin */
+}
+
+/* Alıntı görününce bunlar da görünsün */
+.fate-result.show .share-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.share-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none; /* Link alt çizgisini kaldır */
+}
+
+.share-btn:hover {
+  background: var(--accent);
+  color: #0f1113; /* İkon rengi koyu olsun */
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(212, 163, 115, 0.3);
+}
+
+/* Kopyalandı Mesajı */
+.copy-feedback {
+  position: absolute;
+  right: -80px; /* Kutunun sağına alalım */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.copy-feedback.visible {
+  opacity: 1;
+}
+/* ========================================= */
+/* === GİZLİ MEKTUP ODASI (ATMOSFER) === */
+/* ========================================= */
+
+/* Tüy Kalem Butonu Ayarı */
+.secret-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px; /* Instagram ikonundan biraz ayrılsın */
+  vertical-align: middle;
+}
+
+/* === GİZLİ MEKTUP ODASI (MOBİL UYUMLU) === */
+
+/* Odanın Kendisi */
+.secret-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 17, 19, 0.96);
+  backdrop-filter: blur(10px);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Flex ile tam ortala */
+  padding: 20px; /* Kenarlardan biraz boşluk bırak */
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.6s ease;
+}
+
+.secret-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Kutunun Kendisi */
+.secret-content {
+  width: 100%;           /* Kapsayıcının tamamını kullan */
+  max-width: 450px;      /* Ama 450px'i geçme (Pc'de dev olmasın) */
+  margin: auto;          /* Her yönden ortala */
+  text-align: center;
+  position: relative;
+  transform: scale(0.95);
+  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.secret-modal.active .secret-content {
+  transform: scale(1);
+}
+
+/* Kapatma Çarpısı */
+.close-secret {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  font-size: 2rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: 0.3s;
+}
+.close-secret:hover { color: var(--accent); }
+
+/* Başlıklar */
+.secret-title {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.secret-desc {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Yazı Alanı */
+#secret-text {
+  width: 100%;
+  height: 160px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 15px; /* Mobilde padding fazla gelmesin */
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-style: italic;
+  resize: none;
+  outline: none;
+  box-sizing: border-box; /* Padding dahil hesapla (TAŞMAYI ÖNLER) */
+  transition: 0.3s;
+}
+
+/* Diğer stil ayarları (Buton vb.) aynen kalabilir veya altına ekleyebilirsin */
+#secret-text:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Yak Butonu */
+#burn-btn {
+  margin-top: 25px;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 14px 45px;
+  border-radius: 50px;
+  font-family: var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+#burn-btn:hover {
+  background: var(--accent);
+  color: #0f1113;
+  box-shadow: 0 0 30px rgba(212, 163, 115, 0.4);
+}
+
+/* Duman Efekti (Mesaj Uçarken) */
+.smoke-msg {
+  position: absolute;
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  color: var(--text);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(30px);
+  transition: all 1.2s ease;
+}
+
+.smoke-msg.show {
+  opacity: 1;
+  transform: translateY(-20px);
+  text-shadow: 0 0 15px rgba(255,255,255,0.2);
+}
+
+/* Kağıt Yanma Animasyonu */
+.secret-content.burning {
+  opacity: 0;
+  transform: translateY(-60px) scale(0.9);
+  filter: blur(12px);
+  transition: all 1s ease;
+}
+/* === İKONLARI HİZALAMA AYARI === */
+.social-row {
+  display: flex;
+  align-items: center;      /* Dikeyde tam ortala */
+  justify-content: center;  /* Yatayda tam ortala */
+  gap: 20px;                /* İki ikon arasındaki boşluk */
+  margin: 10px 0 16px;      /* Üstten ve alttan boşluk */
+}
+
+/* Eski marginleri sıfırlayalım ki hizayı bozmasın */
+.social-row .igLink, 
+.social-row .secret-btn {
+  margin: 0 !important;
+}
+
+/* Tüy kalem ikonunun çizgisini biraz inceltip zarifleştirelim */
+.secret-btn svg {
+  stroke-width: 1.5; /* Daha narin dursun */
+}
+/* === KADER BÖLÜMÜNDEKİ KİTAP LİNKİ === */
+.book-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-bottom: 1px dashed rgba(212, 163, 115, 0.5); /* Altına kesik çizgi */
+  padding-bottom: 2px;
+}
+
+.book-link:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+  letter-spacing: 0.5px; /* Üzerine gelince harfler hafif açılsın */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+/* === ALT MENÜ BUTONLARI (GHOST BUTTONS) === */
+.nav-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Butonlar arası boşluk */
+  margin-bottom: 30px;
+  flex-wrap: wrap; /* Mobilde sığmazsa alt satıra geçsin */
+}
+
+.btn-ghost {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* İnce silik çerçeve */
+  border-radius: 50px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent); /* Üzerine gelince pas rengi */
+  color: #fff;
+  background: rgba(212, 163, 115, 0.08); /* Çok hafif dolgu */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+/* === ANA SAYFA ALT MENÜ BUTONLARI === */
+.nav-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.btn-ghost {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: #fff;
+  background: rgba(212, 163, 115, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+html, body {
+  background-color: #0f1113 !important; /* Resim gelene kadar SİYAH kalsın */
+  /* ...diğer kodlar... */
+}
+/* === BUTONA TIKLANINCA OLUŞACAK EFEKT (Fate Tarzı) === */
+.btn-ghost.tiklandi {
+  background-color: var(--accent) !important; /* Pas Rengi Dolgu */
+  color: #0f1113 !important;            /* Yazı Koyu Olsun */
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 20px rgba(212, 163, 115, 0.4); /* Hafif parlama */
+  transform: scale(0.95);               /* Hafifçe içe gömülme */
+  transition: all 0.1s ease;            /* Hızlıca geçiş yap */
+}
+/* === SESSİZ TANIKLIKLAR NAVİGASYONU === */
+.exhibit-nav {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+.exhibit-label {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--accent);
+  opacity: 0.6;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.exhibit-buttons .btn-ghost {
+  font-size: 0.75rem; /* Biraz daha küçük ve zarif dursunlar */
+  padding: 10px 25px;
+  border-color: rgba(212, 163, 115, 0.2);
+}
+
+/* Mobilde butonlar çok sıkışmasın diye */
+@media (max-width: 600px) {
+  .exhibit-buttons {
+    gap: 10px;
+  }
+}
+/* === FOOTER YENİDEN YAPILANDIRMA === */
+.footer {
+  border-top: none; /* Üstteki sert çizgiyi kaldırdık */
+  padding-top: 40px;
+}
+
+/* Orta Ayraç */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 40px 0 25px;
+  opacity: 0.4;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--line);
+}
+
+.divider span {
+  padding: 0 20px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+/* Ana Butonlar */
+.main-nav .btn-ghost {
+  font-weight: 600;
+  border-width: 1.5px;
+}
+
+/* Atlas Butonları (Daha Zarif ve Hafif) */
+.atlas-btn {
+  font-size: 0.75rem !important;
+  padding: 10px 25px !important;
+  opacity: 0.7;
+  border-style: dashed; /* Atlaslara özel "iz" efekti */
+  transition: all 0.4s ease;
+}
+
+.atlas-btn:hover {
+  opacity: 1;
+  border-style: solid;
+  letter-spacing: 2px;
+}
+
+/* Mobil Düzenleme */
+@media (max-width: 600px) {
+  .nav-row {
+    gap: 12px;
+  }
+  .btn-ghost {
+    width: 100%; /* Mobilde butonlar tam genişlik olsun, daha düzenli durur */
+    max-width: 280px;
+  }
+}
+/* === İZEL MODU: TURUNCU SAÇLI KIZ DOKUNUŞU === */
+body.izel-mode {
+  --accent: #ff7b00; /* Turuncu Saçlı Kız'ın o meşhur rengi */
+  transition: all 1.5s ease-in-out; /* Geçişin rüya gibi olması için */
+}
+
+body.izel-mode .btn-ghost:hover {
+  background: rgba(255, 123, 0, 0.15); /* Buton gölgeleri de turuncuya döner */
+  border-color: #ff7b00;
+}
+
+body.izel-mode .divider span {
+  color: #ff7b00;
+}
+/* === İSİMDEKİ GİZLİ İZ === */
+.name-trace {
+  position: relative;
+  display: inline-block;
+}
+
+.name-trace::after {
+  content: attr(data-trace);
+  position: absolute;
+  top: -15px;      /* Başlangıçta isme çok yakın */
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: 0.65rem;
+  font-style: italic;
+  color: var(--accent);
+  opacity: 0;
+  white-space: nowrap;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.name-trace:hover::after {
+  opacity: 0.35;   /* Çok hafif, bir hayalet gibi belirir */
+  top: -35px;      /* Hover anında ismin üzerinden yavaşça yükselir */
+}
+/* === ANA SAYFA GİZLİ SİLUET (SABİTLENMİŞ VE SARSILMAZ) === */
+.bg-silhouette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Mobildeki büyüme sorununu çözmek için '100vh' yerine '100%' ve 'fixed' yüksekliği garantiliyoruz */
+  height: 100%; 
+  z-index: 999;
+  pointer-events: none;
+  background-image: url('./wturuncusaçlıkız.jpg');
+  
+  /* SİHİRLİ DOKUNUŞLAR BURADA: */
+  background-size: cover;       
+  background-position: center;  
+  background-repeat: no-repeat;
+  
+  /* Bu satır mobildeki 'büyüme' efektini durdurur ve resmi çiviler */
+  background-attachment: fixed !important; 
+  
+  /* Tarayıcıya bu katmanın değişmeyeceğini söyleyerek sarsıntıyı önleriz */
+  will-change: transform;
+  -webkit-transform: translateZ(0); 
+  backface-visibility: hidden;
+
+  /* Mevcut efektlerin (Main'den gelen) */
+  opacity: 0.15; 
+  mix-blend-mode: screen; 
+  filter: grayscale(100%) contrast(1.5); 
+}
+/* =========================================
+         GİZLİ İZEL MODU (EASTER EGG)
+   ========================================= */
+
+/* 1. Tüm sayfanın ruhunu (renk paletini) turuncuya çevirir */
+body.izel-mode {
+  --accent: #ff7b00 !important;  /* Pas rengi yerine gerçek, canlı bir turuncu */
+  --muted: #e69c5c !important;   /* Soluk yazılar da turuncuya çalsın */
+  --text: #fff5eb !important;    /* Ana metinler soğuk beyazdan sıcak beyaza geçsin */
+}
+
+/* 2. Hayalet Siluet (Kızın Resmi) Renklenir ve Canlanır */
+body.izel-mode .bg-silhouette {
+  /* Siyah beyazı (grayscale) sıfırla, renkleri patlat (saturate) */
+  filter: grayscale(0%) contrast(1.2) saturate(1.5) !important;
+  opacity: 0.4 !important; /* Duman biraz dağılsın, kız daha net görünsün */
+  transition: filter 2s ease-in-out, opacity 2s ease-in-out !important; /* Renkler yavaşça gelsin */
+}
+
+/* Normal zamanda resmin yavaşça griye dönmesi için bg-silhouette ana sınıfına geçiş ekliyoruz */
+.bg-silhouette {
+  transition: filter 2s ease-in-out, opacity 2s ease-in-out; 
+}
+
+/* 3. El Feneri Işığı Turuncuya Döner */
+body.izel-mode .spotlight {
+  /* Fenerin o soluk sarı/beyaz ışığı, sıcak bir turuncuya dönüşür */
+  background: radial-gradient(circle at var(--x) var(--y), rgba(255, 123, 0, 0.15) 0%, transparent 40%) !important;
+  transition: background 1.5s ease;
+}
+
+/* 4. Film Tozu (Grain) Bile Sıcaklaşır */
+body.izel-mode .grain {
+  background-color: rgba(255, 123, 0, 0.05) !important; /* Havadaki toz zerrecikleri turuncu parlar */
+}
+
+/* 5. İmleç Noktası Turuncu Olur */
+body.izel-mode .cursor-dot,
+body.izel-mode .cursor-outline {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 10px rgba(255, 123, 0, 0.5);
+}
+/* 6. Profil Fotoğrafı Uyanır (İzel Modu) */
+body.izel-mode .profile-ring,
+body.izel-mode .authorPhoto,
+body.izel-mode .profile-img {
+  border-color: var(--accent) !important;
+  /* Kocaeli'ye selam olsun: 41px'lik turuncu bir parlama */
+  box-shadow: 0 0 41px rgba(255, 123, 0, 0.7) !important; 
+  filter: grayscale(0%) saturate(1.2) !important;
+  transform: scale(1.05); /* Çok hafif büyür, sana yaklaşır */
+  transition: all 2s ease-in-out !important;
+}
+
+/* 7. 41 Saniyelik Havada Asılı Kalan Söz */
+#izel-quote {
+  position: fixed;
+  bottom: 15%; /* Ekranın alt kısımlarında, karanlıkta asılı durur */
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: #ff7b00;
+  text-shadow: 0 0 20px rgba(255, 123, 0, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 10000;
+  pointer-events: none;
+  letter-spacing: 2px;
+  text-align: center;
+  transition: opacity 3s ease-in-out; /* Duman gibi yavaşça belirir */
+}
+
+/* Düğmeye 5 kez basıldığında söz görünür olur */
+body.izel-mode #izel-quote {
+  opacity: 1;
+  visibility: visible;
+}
+/* 8. Fransızca Söz 41 Saniyeliğine Parlayarak Uyanır (İzel Modu) */
+body.izel-mode .name-trace::after {
+  opacity: 1 !important; /* Üzerine gelmeyi beklemeden direkt görünür */
+  top: -45px !important; /* İsmin biraz daha yukarısında, havada asılı kalır */
+  color: #ff7b00 !important; /* O sıcak turuncu renge bürünür */
+  text-shadow: 0 0 15px rgba(255, 123, 0, 0.8) !important; /* Hafifçe etrafa ışık saçar */
+  font-size: 0.8rem !important; /* Okunması için bir tık büyür */
+}
