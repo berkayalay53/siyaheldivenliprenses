@@ -1,0 +1,408 @@
+/* === MOBİLDEKİ MAVİ TIKLAMA IŞIĞINI KALDIR === */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+/* BAŞLANGIÇTA GİZLE, YÜKLENİNCE GÖSTER */
+body {
+  opacity: 0; /* Başta görünmez */
+  transition: opacity 0.8s ease-in-out; /* 0.8 saniyede yavaşça belirir */
+  background-color: #0f1113; /* Yüklenirken arkada siyah fon dursun */
+}
+
+body.loaded {
+  opacity: 1 !important; /* Yüklendiğinde görünür olsun */
+}
+/* === GENEL AYARLAR === */
+:root {
+  --bg: #0f1113;
+  --text: #e9e6df;
+  --muted: #bcb6aa;
+  --accent: #d4a373; /* Pas Rengi */
+  --serif: "Crimson Pro", Georgia, serif;
+  --sans: "Inter", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.8;
+  overflow-x: hidden; /* Yatay taşmayı engelle */
+}
+
+/* 1. PAS RENGİ KAYDIRMA ÇUBUĞU */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+  border: 1px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Metin Seçimi */
+::selection { background: var(--accent); color: var(--bg); }
+
+
+/* =============================================
+   1. GİRİŞ EKRANI (ÇİFT KATMANLI - NET YAZI)
+   =============================================
+*/
+#intro-screen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--bg);
+  transition: opacity 1.5s ease-in-out, visibility 1.5s;
+}
+
+/* KATMAN 1: Arka Plan Resmi (Flu) */
+.intro-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('./cover.jpg'); /* Kitap kapağı */
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.4); 
+  transform: scale(1.1);
+  z-index: -1;
+}
+
+/* KATMAN 2: İçerik (Net) */
+.intro-content {
+  position: relative;
+  z-index: 10001;
+  padding: 2rem;
+  max-width: 700px;
+  animation: introFadeIn 1.5s ease;
+}
+
+.kicker {
+  font-family: var(--sans);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 10px;
+}
+
+.intro-title {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #fff;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 20px;
+  text-shadow: 0 5px 30px rgba(0,0,0,0.5);
+}
+
+.intro-sub {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.9);
+  font-style: italic;
+  margin-bottom: 40px;
+}
+
+/* Buton */
+#start-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 14px 40px;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 50px;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: all 0.4s ease;
+}
+
+#start-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  transform: translateY(-2px);
+}
+
+/* Perde Kapanınca */
+#intro-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes introFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =============================================
+   2. ANA SAYFA VE SAHNELER
+   =============================================
+*/
+
+/* Sayfa Arka Planı (Sabit Flu Kapak) */
+.fixed-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('./cover.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(12px) brightness(0.2); 
+  z-index: -1;
+  transform: scale(1.1);
+}
+
+/* Gren Efekti */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  z-index: 999;
+}
+
+.page {
+  max-width: 900px;
+  margin: auto;
+  padding: 0 1.5rem 10rem;
+  opacity: 0; /* Başlangıçta gizli */
+  transition: opacity 1.5s ease;
+}
+
+.page.visible { opacity: 1; }
+
+.hero-spacer { height: 15vh; }
+
+/* ALINTI KUTULARI (SCENE FLOW) */
+.quote {
+  max-width: 520px;
+  margin: 8rem 0; /* Geniş boşluk */
+  background: rgba(255,255,255,0.03); /* Çok hafif cam efekti */
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  
+  /* Animasyon Başlangıcı */
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.quote.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quote p {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: #f0f0f0;
+}
+
+.quote span {
+  display: block;
+  margin-top: 15px;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+/* Konumlandırma Sınıfları */
+.q-left { margin-right: auto; text-align: left; border-left: 2px solid var(--accent); }
+.q-right { margin-left: auto; text-align: right; border-right: 2px solid var(--accent); }
+.q-center { 
+  margin: 6rem auto; 
+  text-align: center; 
+  max-width: 700px;
+  border-top: 1px solid var(--accent);
+  background: transparent;
+  border-left: none; border-right: none;
+}
+.q-center p { font-size: 1.6rem; font-style: italic; }
+
+/* Ayıraç */
+.divider {
+  text-align: center;
+  margin: 6rem 0;
+  color: var(--accent);
+  opacity: 0.4;
+  font-size: 2rem;
+  font-family: var(--serif);
+}
+
+/* PDF İndirme Alanı */
+.reader-section {
+  text-align: center;
+  margin-top: 8rem;
+  padding: 40px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.reader-title {
+  font-family: var(--serif);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.reader-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+.btn-ghost {
+  display: inline-block;
+  padding: 12px 30px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px;
+  color: var(--text);
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+.btn-ghost:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+.end-mark { text-align: center; margin-top: 6rem; }
+.home-link { color: var(--muted); font-size: 0.9rem; transition: 0.3s; }
+.home-link:hover { color: var(--accent); }
+
+/* MOBİL İÇİN ÖZEL AYARLAR (O eziyeti bitiren kod) */
+@media (max-width: 768px) {
+  .page { padding: 0 1.2rem 4rem; }
+  .quote { margin: 3rem 0; width: 100%; max-width: 100%; }
+  .quote p { font-size: 1.2rem; }
+  .intro-title { font-size: 3.5rem; }
+  .divider { margin: 3rem 0; }
+  .q-left, .q-right { text-align: left; border-left: 2px solid var(--accent); border-right: none; }
+}
+/* ========================================= */
+/* === ÖZEL KAYDIRMA ÇUBUĞU (SCROLLBAR) === */
+/* ========================================= */
+
+/* Çubuğun genişliği */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Çubuğun yolu (Arka plan - Sayfa rengiyle aynı) */
+::-webkit-scrollbar-track {
+  background: var(--bg); 
+}
+
+/* Çubuğun kendisi (Hareket eden kısım - Koyu Gri) */
+::-webkit-scrollbar-thumb {
+  background: #333; 
+  border-radius: 4px;
+  border: 1px solid var(--bg); /* Kenarlardan hafif ayrık dursun */
+}
+
+/* Üzerine gelince parlasın (Pas Rengi) */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent); 
+}
+/* ========================================= */
+/* === MÜZİK OYNATICI (PLAK) TASARIMI === */
+/* ========================================= */
+
+.music-control {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.3s ease;
+}
+
+.music-control:hover {
+  transform: scale(1.05);
+}
+
+.disc-wrapper {
+  width: 65px; /* Mobilde parmak rahat basabilsin diye */
+  height: 65px;
+  border-radius: 50%;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.05); /* Cam efekti */
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+}
+
+/* Üzerine gelince senin PAS RENGİ yansın */
+.music-control:hover .disc-wrapper {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(212, 163, 115, 0.3);
+}
+
+.disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
+.disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: sepia(20%); /* Hafif eski havası */
+}
+
+/* Dönme Animasyonu */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.disc.playing {
+  animation: spin 6s linear infinite; /* Dönme hızı */
+}
+
+.music-hint {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* Mobilde biraz daha kenara çekelim */
+@media (max-width: 768px) {
+  .music-control {
+    bottom: 20px;
+    right: 20px;
+  }
+}
