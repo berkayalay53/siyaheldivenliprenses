@@ -100,19 +100,26 @@
 
     document.body.style.overflow = 'hidden';
 
-    startBtn.addEventListener('click', () => {
+  startBtn.addEventListener('click', () => {
+      // Sesi sıfırdan başlat
+      music.volume = 0;
+      music.play();
+      
+      // Sesi 3 saniye içinde yavaşça 0.2 seviyesine çıkar (Fade-in)
+      let fadeIn = setInterval(() => {
+        if (music.volume < 0.2) {
+          music.volume += 0.01;
+        } else {
+          clearInterval(fadeIn);
+        }
+      }, 150); // Her 150 milisaniyede bir küçük bir artış
+
+      // Diğer görsel geçişlerin...
       introScreen.classList.add('fade-out');
       mainPage.classList.add('visible');
       document.body.style.overflow = 'auto';
       setTimeout(() => { introScreen.style.display = 'none'; }, 1500);
     });
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.quote').forEach(quote => observer.observe(quote));
