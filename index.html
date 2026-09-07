@@ -3,9 +3,18 @@
 <head>
   <meta name="theme-color" content="#0f1113">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Kritik Varlıkların Ön Yüklemesi (Eksiksiz & Sıralı) -->
+  <link rel="preload" href="./style.css" as="style">
+  <link rel="preload" href="./cover.jpg" as="image">
+  <link rel="preload" href="./kralkaybederse.jpg" as="image">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Siyah Eldivenli Prenses — Berkay Alay</title>
+
+  <meta property="og:title" content="Siyah Eldivenli Prenses — Berkay Alay">
+  <meta property="og:image" content="https://berkayalay53.github.io/siyaheldivenliprenses.github.io/cover.jpg">
 
   <link rel="icon" href="./cover.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,9 +22,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="./style.css">
-  <link rel="preload" href="./style.css" as="style">
-  <link rel="preload" href="./cover.jpg" as="image">
-  <link rel="preload" href="./kralkaybederse.jpg" as="image">
 </head>
 <body>
 
@@ -71,13 +77,14 @@
       <p style="color: #bbb; margin-bottom: 20px;">Mesafeli bir dokunuşun, dünyadaki tüm gürültülerden daha gerçek olduğunu hissetmek için...</p>
       
       <div class="book-actions">
-  <a href="https://play.google.com/books/reader?id=TGLPEQAAQBAJ&pg=GBS.PP1&hl=tr" target="_blank">
-    Ücretsiz Ön İzleme
-  </a>
-  <a href="https://play.google.com/store/books/details/Berkay_Alay_Siyah_Eldivenli_Prenses?id=TGLPEQAAQBAJ" class="btn-primary" target="_blank">
-    Tam Sürümü Edinin
-  </a>
-</div>
+        <a href="https://play.google.com/books/reader?id=TGLPEQAAQBAJ&pg=GBS.PP1&hl=tr" class="btn-secondary" target="_blank">
+          Ücretsiz Ön İzleme
+        </a>
+        <a href="https://play.google.com/store/books/details/Berkay_Alay_Siyah_Eldivenli_Prenses?id=TGLPEQAAQBAJ" class="btn-primary" target="_blank">
+          Tam Sürümü Edinin
+        </a>
+      </div>
+    </div>
 
     <div class="end-mark">
       <a href="https://berkayalay53.github.io/" class="home-link">← Kütüphaneye Dön</a>
@@ -87,13 +94,13 @@
   <div class="music-control" id="music-trigger">
     <div class="disc-wrapper">
       <div class="disc" id="disc">
-        <img src="./kralkaybederse.jpg" alt="Müzik Plağı">
+        <img src="./kralkaybederse.jpg" alt="Müzik Plağı" draggable="false">
       </div>
     </div>
     <span class="music-hint">Melodiyi dinle...</span>
   </div>
 
-  <audio id="bg-music" loop>
+  <audio id="bg-music" loop preload="auto">
     <source src="./muzik.mp3" type="audio/mpeg">
   </audio>
 
@@ -107,14 +114,32 @@
 
     document.body.style.overflow = 'hidden';
 
-    // Giriş Butonu ve Fade-in Mekanizması
+    // === EKSİKSİZ VE TAM YÜKLENME DENETİMİ ===
+    function completePageLoad() {
+      if (!document.body.classList.contains('loaded')) {
+        document.body.classList.add('loaded');
+        if (typeof createDust === "function") createDust();
+      }
+    }
+
+    // Tüm görseller, yazı tipleri ve CSS eksiksiz indiğinde perde aralanır
+    window.addEventListener('load', completePageLoad);
+
+    // Geri butonuyla dönüldüğünde önbellekten sorunsuz devam eder
+    window.addEventListener('pageshow', (event) => {
+      completePageLoad();
+    });
+
+    // Beklenmedik ağ donmalarına karşı emniyet sübabı (4 sn)
+    setTimeout(completePageLoad, 4000);
+
+    // Giriş Butonu ve Perde Açılışı
     startBtn.addEventListener('click', () => {
       music.volume = 0;
       music.play().catch(error => console.log("Oynatma engellendi:", error));
       
       let fadeIn = setInterval(() => {
         if (music.volume < 0.2) {
-          // Sayı hassasiyeti için küçük bir düzeltme
           let newVol = music.volume + 0.01;
           music.volume = Math.min(newVol, 0.2);
         } else {
@@ -123,15 +148,19 @@
       }, 150);
 
       disc.classList.add('playing');
-      if(hint) hint.textContent = "Çalıyor...";
+      if (hint) hint.textContent = "Çalıyor...";
 
       introScreen.classList.add('fade-out');
       mainPage.classList.add('visible');
+
+      // Sayfa akışını serbest bırak
       document.body.style.overflow = 'auto';
+      document.documentElement.style.overflow = 'auto';
+
       setTimeout(() => { introScreen.style.display = 'none'; }, 1500);
     });
 
-    // Kaydırma İzleyici (Alıntıların belirmesi için gerekli)
+    // Alıntıların Görünme Gözlemcisi
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -142,41 +171,18 @@
 
     document.querySelectorAll('.quote').forEach(quote => observer.observe(quote));
 
-    // Manuel Müzik Kontrolü
+    // Müzik Butonu
     document.getElementById('music-trigger').addEventListener('click', () => {
       if (music.paused) {
         music.play();
         disc.classList.add('playing');
-        hint.textContent = "Çalıyor...";
+        if (hint) hint.textContent = "Çalıyor...";
       } else {
         music.pause();
         disc.classList.remove('playing');
-        hint.textContent = "Duraklatıldı";
+        if (hint) hint.textContent = "Duraklatıldı";
       }
     });
-
-    window.addEventListener('load', () => {
-      document.body.classList.add('loaded');
-    });
-    // === SAYFA YÜKLENME VE PERDE YÖNETİCİSİ ===
-
-// 1. Geri butonuyla (tarayıcı önbelleğinden) gelindiğinde kilitlenmeyi önler
-window.addEventListener("pageshow", function(event) {
-  if (event.persisted) {
-    document.body.classList.add('loaded');
-    document.body.style.opacity = "1";
-  }
-});
-
-// 2. Kapak görseli ve tüm kaynaklar hazır olduğunda perdeyi açar
-window.addEventListener('load', () => {
-  document.body.classList.add('loaded');
-});
-
-// 3. Güvenlik Sübabı: Bağlantı yavaşsa kullanıcı karanlıkta kalmasın
-setTimeout(() => {
-  document.body.classList.add('loaded');
-}, 2500);
   </script>
 </body>
 </html>
